@@ -7,31 +7,18 @@ from helpers import time_difference
 
 load_dotenv()
 
-# 临时改为 24 小时（确保能抓到东西），验证成功后你可以改回 3600
+# 临时设为 24 小时（确保能抓到东西）
 RUN_FREQUENCY = int(os.getenv("RUN_FREQUENCY", "86400"))
 
 # ===== 热门技术资讯 RSS 源（肯定有内容）=====
 RSS_URLS = [
-    # 1. TechCrunch 科技新闻（头部科技媒体，日更量大）
     "https://techcrunch.com/feed/",
-
-    # 2. Hacker News 热门文章（技术社区每天数百条新讨论）
     "https://hnrss.org/frontpage",
-
-    # 3. The Verge 科技版
     "https://www.theverge.com/tech/rss/index.xml",
-
-    # 4. Ars Technica（深度技术文章）
     "https://feeds.arstechnica.com/arstechnica/index",
-
-    # 5. Wired 科技版
     "https://www.wired.com/feed/rss",
-
-    # 6. 如果你想要 AI 领域热门（可选）
     "https://www.artificialintelligence-news.com/feed/",
 ]
-
-# ============================
 
 def _parse_struct_time_to_timestamp(st):
     if st:
@@ -77,7 +64,6 @@ def get_new_feed_items_from(feed_url):
             continue
 
         diff = time_difference(current_time, blog_published_time)
-        # 临时设为 24 小时，确保能抓到
         if diff["diffInSeconds"] < RUN_FREQUENCY:
             new_items.append({
                 "title": item.get("title", ""),
@@ -99,5 +85,4 @@ def get_new_feed_items():
         key=lambda x: _parse_struct_time_to_timestamp(x.get("published_parsed"))
     )
     print(f"总共 {len(all_new_feed_items)} 条新文章待推送")
-
     return all_new_feed_items
